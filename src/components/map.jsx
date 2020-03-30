@@ -4,7 +4,7 @@ import L from "leaflet";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
 import { getCountries, getFakeCountries } from "./../services/countryService";
-import usstates from "../data/usstates";
+import geoJsonData from "../data/uscounties_edited";
 
 function CovidMap(props) {
   const [countries, setCountries] = useState([
@@ -32,6 +32,7 @@ function CovidMap(props) {
       //let countryData = await getFakeCountries();
       console.log("countryData is :", countryData);
       setCountries(countryData);
+      
     };
     fetchData();
   }, []);
@@ -54,6 +55,28 @@ function CovidMap(props) {
     iconAnchor: [5, 10],
     popupAnchor: [2, -10]
   });
+
+  const geoStyle = {
+    style: function useStyle(feature) {
+      let fillColor,
+        confirmed = countries.Confirmed;
+      if (confirmed > 300) fillColor = "#006837";
+      else if (confirmed > 50) fillColor = "#31a354";
+      else if (confirmed > 20) fillColor = "#78c679";
+      else if (confirmed > 10) fillColor = "#c2e699";
+      else if (confirmed > 0) fillColor = "#ffffcc";
+      else fillColor = "#f7f7f7"; // Try to hide it
+      return {
+        color: "#999",
+        weight: 1,
+        fillColor: fillColor,
+        fillOpacity: 0.6
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      layer.bindPopup("<strong>" + countries.Combined_Key);
+    }
+  };
 
   /////////////////////////////////
   //* OLD VERSION THAT WORKS
@@ -78,7 +101,7 @@ function CovidMap(props) {
           url={mapConfig.tileLayer.url}
           attribution={mapConfig.tileLayer.attribution}
         />
-        <GeoJSON data={usstates} />
+        <GeoJSON data={geoJsonData} style={geoStyle} />
         {countries ? (
           countries.map(
             (
