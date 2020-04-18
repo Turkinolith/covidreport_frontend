@@ -12,6 +12,7 @@ Tech used - Backend:
 <ul>
   <li>Node.js,</li>
   <li>express,</li>
+  <li>JEST,</li>
 <li>mongoose,</li>
 <li>@hapi/joi,</li>
 <li>bcrypt,</li>
